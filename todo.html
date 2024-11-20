@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>todo app</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body>
+    <div class="todo">
+      <form action="#">
+        <input type="text" id="input" placeholder="enter the value" />
+        <button id="submit" onclick="list()" class="add">Add</button>
+        <div id="error" class="formerror"></div>
+      </form>
+      <div id="listdata">
+        <ul></ul>
+      </div>
+    </div>
+    <script>
+      let arr = [],
+        storeInx;
+      let errors = [];
+      const error = () => {
+        errors.map((value, index) => {
+          document.getElementById("error").innerHTML = value;
+        });
+      };
+
+      // using simple array
+
+      // const list = () => {
+      //     let x = document.getElementById('submit');
+      //     console.log(x.innerText);
+      //     if (x.innerText == "Add") {
+      //         if ((document.getElementById("input").value).trim() !== "") {
+      //             if (document.getElementById('input').value.length <= 1) {
+      //                 errors.push("please enter at least 2 character");
+      //             } else {
+      //                 arr.push(document.getElementById("input").value);
+      //                 errors.push("");
+      //             }
+      //         } else {
+      //             if (document.getElementById('input').value === "") {
+      //                 errors.push("please enter something");
+      //             }
+      //         }
+      //         error();
+      //         show();
+      //     } else {
+      //         update();
+      //     }
+      // }
+      // const show = () => {
+      //     let string = "";
+      //     arr.map((v, i) => {
+      //         string += `<div class="data"><li>${v}</li><div class='btn'><button class='btn-in' onclick="edit(${i})">Edit</button><button class='btn-in' onclick="remove(${i})">Delete</button></div></div>`
+      //     })
+      //     let list = document.getElementsByTagName('ul');
+      //     list[0].innerHTML = string;
+      //     document.getElementById("input").value = "";
+      // }
+      // const remove = (e) => {
+      //     arr.splice(e, 1);
+      //     show();
+      //     if (arr.length <= 0) {
+      //         errors.push("no data found");
+      //         error();
+      //     }
+      // }
+      // const edit = (p) => {
+      //     document.getElementById('input').value = arr.at(p);
+      //     document.getElementsByTagName('button')[0].innerText = "update";
+      //     storeInx = p;
+      // }
+      // const update = () => {
+      //     console.log(storeInx,document.getElementById('input').value);
+      //     arr.splice(storeInx,1,document.getElementById('input').value);
+      //     console.log(arr);
+      //     show();
+      //     document.getElementsByTagName('button')[0].innerText = "Add";
+      // }
+
+      // Local storage
+      if (!JSON.parse(localStorage.getItem("todos"))) {
+        localStorage.setItem("todos", JSON.stringify(arr));
+
+        if (arr.length <= 0) {
+          errors.push("no data found");
+          error();
+        }
+      }
+      const show = () => {
+        let string = "";
+        arr?.map((v, i) => {
+          string += `<div class="data"><li>${v}</li><div class='btn'><button class='btn-in' onclick="edit(${i})">Edit</button><button class='btn-in' onclick="remove(${i})">Delete</button></div></div>`;
+        });
+        let list = document.getElementsByTagName("ul");
+        list[0].innerHTML = string;
+        document.getElementById("input").value = "";
+      };
+      const getDbItem = () => {
+        arr = JSON.parse(localStorage.getItem("todos"));
+        show();
+      };
+      getDbItem();
+      const SetDbItem = () => {
+        localStorage.setItem("todos", JSON.stringify(arr));
+        getDbItem();
+      };
+      const list = () => {
+        let x = document.getElementById("submit");
+        console.log(x.innerText);
+        if (x.innerText == "Add") {
+          if (document.getElementById("input").value.trim() !== "") {
+            if (document.getElementById("input").value.length <= 1) {
+              errors.push("please enter at least 2 character");
+            } else {
+              arr.push(document.getElementById("input").value);
+              errors.push("");
+            }
+          } else {
+            if (document.getElementById("input").value === "") {
+              errors.push("please enter something");
+            }
+          }
+          error();
+          show();
+        } else {
+          update();
+        }
+        SetDbItem();
+      };
+      const remove = (e) => {
+        arr.splice(e, 1);
+        show();
+        SetDbItem();
+        if (arr.length <= 0) {
+          errors.push("no data found");
+          error();
+        }
+      };
+      const edit = (p) => {
+        document.getElementById("input").value = arr.at(p);
+        document.getElementsByTagName("button")[0].innerText = "update";
+        storeInx = p;
+      };
+      const update = () => {
+        arr.splice(storeInx, 1, document.getElementById("input").value);
+        console.log(arr);
+        show();
+        document.getElementsByTagName("button")[0].innerText = "Add";
+      };
+    </script>
+  </body>
+</html>
