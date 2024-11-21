@@ -10,8 +10,10 @@
   <body>
     <div class="todo">
       <form action="#">
-        <input type="text" id="input" placeholder="enter the value" />
-        <button id="submit" onclick="list()" class="add">Add</button>
+        <div class="list">
+          <input type="text" id="input" placeholder="enter the value" />
+          <button id="submit" onclick="list()" class="add">Add</button>
+        </div>
         <div id="error" class="formerror"></div>
       </form>
       <div id="listdata">
@@ -29,7 +31,6 @@
       };
 
       // using simple array
-
       // const list = () => {
       //     let x = document.getElementById('submit');
       //     console.log(x.innerText);

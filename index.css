@@ -12,16 +12,19 @@
 }
 li {
     display: flex;
-    justify-content: left;
+    width: 50%;
+    text-wrap: wrap;
 }
 input {
     padding: 10px 5px;
     border: 1px solid rgb(126 34 206 / var(--tw-bg-opacity, 1));
     outline: none;
+    width: 80%;
 }
 .btn {
     display: flex;
     gap: 8px;
+    width: 50%;
 }
 .btn-in {
     padding: 3px 5px;
@@ -29,6 +32,7 @@ input {
     color: white;
     border-radius: 5px;
     border: 1px solid purple;
+    width: 50%;
 }
 .add {
     padding: 10px;
@@ -42,6 +46,7 @@ input {
     align-items: center;
     justify-content: space-between;
     margin: 10px 0px;
+    width: 100%;
 }
 .demo {
     display: flex;
@@ -49,4 +54,8 @@ input {
 }
 .formerror {
     color: red;
+}
+.list {
+    display: flex;
+    gap: 7px;
 }
