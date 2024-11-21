@@ -4,17 +4,18 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>todo app</title>
+    <link rel="icon" type="image/png" href="./images/todo.png" />
     <link rel="stylesheet" href="index.css" />
   </head>
 
   <body>
     <div class="todo">
       <form action="#">
-        <div class="list">
+        <div class="insert">
           <input type="text" id="input" placeholder="enter the value" />
-          <button id="submit" onclick="list()" class="add">Add</button>
+          <button id="submit" onclick="insert_data()" class="add">Add</button>
         </div>
-        <div id="error" class="formerror"></div>
+        <div id="error" class="form_error"></div>
       </form>
       <div id="listdata">
         <ul></ul>
@@ -22,15 +23,96 @@
     </div>
     <script>
       let arr = [],
-        storeInx;
-      let errors = [];
-      const error = () => {
-        errors.map((value, index) => {
-          document.getElementById("error").innerHTML = value;
-        });
-      };
+        storeInx,
+        errors = "";
 
-      // using simple array
+      // Local storage
+      if (!JSON.parse(localStorage.getItem("todos"))) {
+        localStorage.setItem("todos", JSON.stringify(arr));
+
+        if (arr.length <= 0) {
+          errors += "no data found";
+          document.getElementById('error').innerText = errors;
+        }
+      }
+      const show = () => {
+        let string = "";
+        arr?.map((v, i) => {
+          string += `<div class="data"><li onclick="is_completed(${i})" id="show_${i}">${v}</li><div class='btn'><button class='btn-in' onclick="edit(${i})">Edit</button><button class='btn-in' onclick="remove(${i})">Delete</button></div></div>`;
+        });
+        let list = document.getElementsByTagName("ul");
+        list[0].innerHTML = string;
+        document.getElementById("input").value = "";
+      };
+      const getDbItem = () => {
+        arr = JSON.parse(localStorage.getItem("todos"));
+        show();
+      };
+      getDbItem();
+      const SetDbItem = () => {
+        localStorage.setItem("todos", JSON.stringify(arr));
+        getDbItem();
+      };
+      const insert_data = () => {
+        let x = document.getElementById("submit");
+        console.log(x.innerText);
+        if (x.innerText == "Add") {
+          if (document.getElementById("input").value.trim() !== "") {
+            if (document.getElementById("input").value.trim().length <= 1) {
+              errors += "please enter at least 2 character";
+              document.getElementById("error").innerText = errors;
+            } else {
+              arr.push(document.getElementById("input").value);
+              errors = "";
+              document.getElementById("error").innerText = errors;
+            }
+          } else {
+            if (document.getElementById("input").value === "") {
+              errors += "please enter something";
+              document.getElementById("error").innerText = errors;
+            }
+          }
+          show();
+        } else {
+          update();
+        }
+        SetDbItem();
+      };
+      const remove = (e) => {
+        arr.splice(e, 1);
+        show();
+        SetDbItem();
+        if (arr.length <= 0) {
+          errors += "no data found";
+          document.getElementById("error").innerText = errors;
+        }
+      };
+      const edit = (p) => {
+        document.getElementById("input").value = arr.at(p);
+        document.getElementsByTagName("button")[0].innerText = "update";
+        storeInx = p;
+      };
+      const update = () => {
+        arr.splice(storeInx, 1, document.getElementById("input").value);
+        show();
+        document.getElementsByTagName("button")[0].innerText = "Add";
+      };
+      const is_completed = (t) => {  //is_completed
+        document.getElementById(`show_${t}`).style.textDecoration =
+          "line-through";
+
+        const time_limit = () => {
+          document.getElementById(`show_${t}`).innerHTML = arr.splice(t, 1);
+          show();
+          SetDbItem();
+          if (arr.length <= 0) {
+            errors += "no data found";
+            document.getElementById("error").innerText = errors;  
+          }
+        };
+        const myTimeout = setTimeout(time_limit, 1000);
+      };
+        // using simple array
       // const list = () => {
       //     let x = document.getElementById('submit');
       //     console.log(x.innerText);
@@ -56,7 +138,7 @@
       // const show = () => {
       //     let string = "";
       //     arr.map((v, i) => {
-      //         string += `<div class="data"><li>${v}</li><div class='btn'><button class='btn-in' onclick="edit(${i})">Edit</button><button class='btn-in' onclick="remove(${i})">Delete</button></div></div>`
+      //         string += `<div class="data" id="show"><li>${v}</li><div class='btn'><button class='btn-in' onclick="edit(${i})">Edit</button><button class='btn-in' onclick="remove(${i})">Delete</button></div></div>`
       //     })
       //     let list = document.getElementsByTagName('ul');
       //     list[0].innerHTML = string;
@@ -82,77 +164,6 @@
       //     show();
       //     document.getElementsByTagName('button')[0].innerText = "Add";
       // }
-
-      // Local storage
-      if (!JSON.parse(localStorage.getItem("todos"))) {
-        localStorage.setItem("todos", JSON.stringify(arr));
-
-        if (arr.length <= 0) {
-          errors.push("no data found");
-          error();
-        }
-      }
-      const show = () => {
-        let string = "";
-        arr?.map((v, i) => {
-          string += `<div class="data"><li>${v}</li><div class='btn'><button class='btn-in' onclick="edit(${i})">Edit</button><button class='btn-in' onclick="remove(${i})">Delete</button></div></div>`;
-        });
-        let list = document.getElementsByTagName("ul");
-        list[0].innerHTML = string;
-        document.getElementById("input").value = "";
-      };
-      const getDbItem = () => {
-        arr = JSON.parse(localStorage.getItem("todos"));
-        show();
-      };
-      getDbItem();
-      const SetDbItem = () => {
-        localStorage.setItem("todos", JSON.stringify(arr));
-        getDbItem();
-      };
-      const list = () => {
-        let x = document.getElementById("submit");
-        console.log(x.innerText);
-        if (x.innerText == "Add") {
-          if (document.getElementById("input").value.trim() !== "") {
-            if (document.getElementById("input").value.length <= 1) {
-              errors.push("please enter at least 2 character");
-            } else {
-              arr.push(document.getElementById("input").value);
-              errors.push("");
-            }
-          } else {
-            if (document.getElementById("input").value === "") {
-              errors.push("please enter something");
-            }
-          }
-          error();
-          show();
-        } else {
-          update();
-        }
-        SetDbItem();
-      };
-      const remove = (e) => {
-        arr.splice(e, 1);
-        show();
-        SetDbItem();
-        if (arr.length <= 0) {
-          errors.push("no data found");
-          error();
-        }
-      };
-      const edit = (p) => {
-        document.getElementById("input").value = arr.at(p);
-        document.getElementsByTagName("button")[0].innerText = "update";
-        storeInx = p;
-      };
-      const update = () => {
-        arr.splice(storeInx, 1, document.getElementById("input").value);
-        console.log(arr);
-        show();
-        document.getElementsByTagName("button")[0].innerText = "Add";
-      };
     </script>
   </body>
 </html>
